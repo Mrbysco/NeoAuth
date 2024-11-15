@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "compatibilityLevel": "JAVA_21",
+  "package": "com.mrbysco.neoauth.mixin",
+  "mixins": [],
+  "server": [],
+  "client": [
+    "AbuseReportContextAccessor",
+    "DisconnectedScreenMixin",
+    "MinecraftClientAccessor",
+    "MultiplayerScreenMixin",
+    "RealmsGenericErrorScreenMixin",
+    "RealmsAvailabilityAccessor",
+    "SplashTextResourceSupplierAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

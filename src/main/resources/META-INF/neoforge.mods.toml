@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+issueTrackerURL="https://github.com/Mrbysco/NeoAuth/issues"
+license="MIT"
+
+[[mods]]
+modId="neo_auth"
+version="${file.jarVersion}"
+displayName="NeoAuth"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/neoauth"
+authors="Mrbysco, Axieum"
+credits="Axieum for making Auth Me"
+description='''
+A Neoforge port of AuthMe
+'''
+[[dependencies.neo_auth]]
+modId="minecraft"
+type="required"
+versionRange="[1.21,1.22)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.neo_auth]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.1,)"
+ordering="NONE"
+side="BOTH"
+[[mixins]]
+config="neoauth.mixins.json"
