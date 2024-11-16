@@ -179,10 +179,11 @@ if (System.getenv().CURSEFORGE_KEY) {
 
         def mainFile = upload(project.curseforge_id, jar)
         mainFile.releaseType = 'beta'
+        mainFile.addModLoader("Forge")
         mainFile.addModLoader("NeoForge")
         mainFile.addGameVersion("${mc_version}")
         mainFile.addJavaVersion("Java 17")
-        mainFile.addGameVersion('Server', 'Client')
+        mainFile.addGameVersion('Client')
 
         mainFile.changelog = file("$project.rootDir/changelog.md")
         mainFile.changelogType = 'markdown'
@@ -202,7 +203,7 @@ if (System.getenv().MODRINTH_KEY) {
         uploadFile = jar
         changelog = file("$project.rootDir/changelog.md").text
         gameVersions = ["${mc_version}"]
-        loaders = ["neoforge"]
+        loaders = ["forge", "neoforge"]
 
         dependencies {
 
