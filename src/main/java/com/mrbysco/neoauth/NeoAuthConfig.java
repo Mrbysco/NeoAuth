@@ -2,11 +2,11 @@ package com.mrbysco.neoauth;
 
 import com.mrbysco.neoauth.util.MicrosoftUtils;
 import com.mrbysco.neoauth.util.MicrosoftUtils.MicrosoftPrompt;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
-import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
-import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
-import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class NeoAuthConfig {
 		public final IntValue yPos;
 		public final BooleanValue draggable;
 
-		Client(ModConfigSpec.Builder builder) {
+		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Auth settings")
 					.push("microsoft");
 
@@ -97,11 +97,11 @@ public class NeoAuthConfig {
 	}
 
 
-	public static final ModConfigSpec clientSpec;
+	public static final ForgeConfigSpec clientSpec;
 	public static final Client CLIENT;
 
 	static {
-		final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
+		final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
 		clientSpec = specPair.getRight();
 		CLIENT = specPair.getLeft();
 	}

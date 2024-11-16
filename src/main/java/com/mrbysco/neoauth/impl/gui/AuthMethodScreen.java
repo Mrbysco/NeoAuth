@@ -5,16 +5,15 @@ import com.mrbysco.neoauth.NeoAuth;
 import com.mrbysco.neoauth.NeoAuthConfig;
 import com.mrbysco.neoauth.util.SessionUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * A screen for choosing a user authentication method.
@@ -22,25 +21,6 @@ import net.minecraft.resources.ResourceLocation;
 public class AuthMethodScreen extends Screen {
 	// The parent (or last) screen that opened this screen
 	private final Screen parentScreen;
-
-	// The 'Microsoft' authentication method button textures
-	public static final WidgetSprites MICROSOFT_BUTTON_TEXTURES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/microsoft_button"),
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/microsoft_button_disabled"),
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/microsoft_button_focused")
-	);
-	// The 'Mojang (or legacy)' authentication method button textures
-	public static final WidgetSprites MOJANG_BUTTON_TEXTURES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/mojang_button"),
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/mojang_button_disabled"),
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/mojang_button_focused")
-	);
-	// The 'Offline' authentication method button textures
-	public static final WidgetSprites OFFLINE_BUTTON_TEXTURES = new WidgetSprites(
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/offline_button"),
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/offline_button_disabled"),
-			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/offline_button_focused")
-	);
 
 	/**
 	 * Constructs a new authentication method choice screen.
@@ -81,7 +61,7 @@ public class AuthMethodScreen extends Screen {
 		// Add a button for the 'Microsoft' authentication method
 		ImageButton msButton = new ImageButton(
 				width / 2 - 10 - 10 - 4, height / 2 - 5, 20, 20,
-				MICROSOFT_BUTTON_TEXTURES,
+				0, 0, 20, NeoAuth.WIDGETS_TEXTURE, 128, 128,
 				button -> {
 					// If 'Left Control' is being held, enforce user interaction
 					final boolean selectAccount = InputConstants.isKeyDown(
@@ -116,8 +96,8 @@ public class AuthMethodScreen extends Screen {
 		// Add a button for the 'Mojang (or legacy)' authentication method
 		ImageButton mojangButton = new ImageButton(
 				width / 2, height / 2 - 5, 20, 20,
-				MOJANG_BUTTON_TEXTURES,
-				ConfirmLinkScreen.confirmLink(this, NeoAuth.MOJANG_ACCOUNT_MIGRATION_FAQ_URL),
+				20, 0, 20, NeoAuth.WIDGETS_TEXTURE, 128, 128,
+				ConfirmLinkScreen.confirmLink(NeoAuth.MOJANG_ACCOUNT_MIGRATION_FAQ_URL, this, true),
 				Component.translatable("gui.neo_auth.method.button.mojang")
 		);
 		mojangButton.setTooltip(Tooltip.create(
@@ -133,6 +113,17 @@ public class AuthMethodScreen extends Screen {
 						.bounds(width / 2 - 50, height / 2 + 27, 100, 20)
 						.build()
 		);
+	}
+
+	@Override
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+		assert minecraft != null;
+
+		// Render the background before any widgets
+		renderBackground(guiGraphics);
+
+		// Cascade the rendering
+		super.render(guiGraphics, mouseX, mouseY, delta);
 	}
 
 	@Override

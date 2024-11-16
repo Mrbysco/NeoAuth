@@ -12,9 +12,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(SplashManager.class)
 public interface SplashTextResourceSupplierAccessor {
 	/**
-	 * Sets the Minecraft session.
+	 * Sets the Minecraft user.
 	 *
-	 * @param user new Minecraft session
+	 * @param user new Minecraft user
 	 */
 	@Accessor
 	@Mutable

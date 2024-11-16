@@ -1,17 +1,20 @@
 package com.mrbysco.neoauth.util;
 
+import com.mojang.authlib.Agent;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
+import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import com.mojang.realmsclient.client.RealmsClient;
 import com.mojang.realmsclient.gui.RealmsDataFetcher;
 import com.mrbysco.neoauth.NeoAuth;
 import com.mrbysco.neoauth.mixin.AbuseReportContextAccessor;
 import com.mrbysco.neoauth.mixin.MinecraftClientAccessor;
-import com.mrbysco.neoauth.mixin.RealmsAvailabilityAccessor;
+import com.mrbysco.neoauth.mixin.RealmsMainScreenAccessor;
 import com.mrbysco.neoauth.mixin.SplashTextResourceSupplierAccessor;
-import net.minecraft.Util;
+import com.mrbysco.neoauth.mixin.YggdrasilAuthenticationServiceAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.screens.social.PlayerSocialManager;
@@ -48,26 +51,29 @@ public final class SessionUtils {
 	}
 
 	/**
-	 * Replaces the Minecraft session instance.
+	 * Replaces the Minecraft user instance.
 	 *
-	 * @param session new Minecraft session
+	 * @param user new Minecraft user
 	 */
-	public static void setSession(User session) {
+	public static void setSession(User user) {
 		final Minecraft client = Minecraft.getInstance();
 
-		// Use an accessor mixin to update the 'private final' Minecraft session
-		((MinecraftClientAccessor) client).setUser(session);
-		((SplashTextResourceSupplierAccessor) client.getSplashManager()).setUser(session);
+		// Use an accessor mixin to update the 'private final' Minecraft user
+		((MinecraftClientAccessor) client).setUser(user);
+		((SplashTextResourceSupplierAccessor) client.getSplashManager()).setUser(user);
 
-		// Re-create the game profile future
-		((MinecraftClientAccessor) client).setProfileFuture(
-				CompletableFuture.supplyAsync(() -> client.getMinecraftSessionService().fetchProfile(session.getProfileId(), true),
-						Util.nonCriticalIoPool()));
+		// Refresh the user properties
+		client.getProfileProperties().clear();
+		client.getProfileProperties();
 
-		// Re-create the user API service (ignore offline session)
+		// Re-create the user API service (ignore offline user)
 		UserApiService userApiService = UserApiService.OFFLINE;
-		if (!OFFLINE_TOKEN.equals(session.getAccessToken())) {
-			userApiService = getAuthService().createUserApiService(session.getAccessToken());
+		if (!OFFLINE_TOKEN.equals(user.getAccessToken())) {
+			try {
+				userApiService = getAuthService().createUserApiService(user.getAccessToken());
+			} catch (AuthenticationException e) {
+				NeoAuth.LOGGER.error("Failed to verify authentication for new user API service!", e);
+			}
 		}
 		((MinecraftClientAccessor) client).setUserApiService(userApiService);
 
@@ -78,7 +84,7 @@ public final class SessionUtils {
 
 		// Re-create the profile keys
 		((MinecraftClientAccessor) client).setProfileKeyPairManager(
-				ProfileKeyPairManager.create(userApiService, session, client.gameDirectory.toPath())
+				ProfileKeyPairManager.create(userApiService, user, client.gameDirectory.toPath())
 		);
 
 		// Re-create the abuse report context
@@ -89,18 +95,17 @@ public final class SessionUtils {
 				)
 		);
 
-		// Necessary for Realms to re-check for a valid session
+		// Necessary for Realms to re-check for a valid user
 		RealmsClient realmsClient = RealmsClient.create(client);
 		((MinecraftClientAccessor) client).setRealmsDataFetcher(new RealmsDataFetcher(realmsClient));
-		RealmsAvailabilityAccessor.setFuture(null);
+		RealmsMainScreenAccessor.setCheckedClientCompatability(false);
+		RealmsMainScreenAccessor.setRealmsGenericErrorScreen(null);
 
 		// The cached status is now stale
 		lastStatus = SessionStatus.UNKNOWN;
 		lastStatusCheck = 0;
 
-		NeoAuth.LOGGER.info(
-				"Minecraft session for {} (uuid={}) has been applied", session.getName(), session.getProfileId()
-		);
+		NeoAuth.LOGGER.info("Minecraft user for {} (uuid={}) has been applied", user.getName(), user.getUuid());
 	}
 
 	/**
@@ -113,7 +118,7 @@ public final class SessionUtils {
 	public static User offline(String username) {
 		return new User(
 				username,
-				UUID.nameUUIDFromBytes(("offline:" + username).getBytes()),
+				UUID.nameUUIDFromBytes(("offline:" + username).getBytes()).toString(),
 				OFFLINE_TOKEN,
 				Optional.empty(),
 				Optional.empty(),
@@ -141,14 +146,16 @@ public final class SessionUtils {
 		return CompletableFuture.supplyAsync(() -> {
 			// Fetch the current session
 			final User session = getSession();
-			final String serverId = UUID.randomUUID().toString();
+			final GameProfile profile = session.getGameProfile();
+			final String token = session.getAccessToken();
+			final String id = UUID.randomUUID().toString();
 
 			// Attempt to join the Minecraft Session Service server
 			final YggdrasilMinecraftSessionService sessionService = getSessionService();
 			try {
 				NeoAuth.LOGGER.info("Verifying Minecraft session...");
-				sessionService.joinServer(session.getProfileId(), session.getAccessToken(), serverId);
-				if (sessionService.hasJoinedServer(session.getName(), serverId, null) != null) {
+				sessionService.joinServer(profile, token, id);
+				if (sessionService.hasJoinedServer(profile, id, null).isComplete()) {
 					NeoAuth.LOGGER.info("The Minecraft session is valid");
 					lastStatus = SessionStatus.VALID;
 				} else {
@@ -181,7 +188,23 @@ public final class SessionUtils {
 	 * @return Yggdrasil Authentication Service instance
 	 */
 	public static YggdrasilAuthenticationService getAuthService() {
-		return ((MinecraftClientAccessor) Minecraft.getInstance()).getAuthenticationService();
+		final YggdrasilAuthenticationService authService = getSessionService().getAuthenticationService();
+
+		// Provide a random client token if not set
+		if (((YggdrasilAuthenticationServiceAccessor) authService).getClientToken() == null) {
+			((YggdrasilAuthenticationServiceAccessor) authService).setClientToken(UUID.randomUUID().toString());
+		}
+
+		return authService;
+	}
+
+	/**
+	 * Returns the Yggdrasil User Authentication provider.
+	 *
+	 * @return Yggdrasil User Authentication instance
+	 */
+	public static YggdrasilUserAuthentication getAuthProvider() {
+		return (YggdrasilUserAuthentication) getAuthService().createUserAuthentication(Agent.MINECRAFT);
 	}
 
 	/**

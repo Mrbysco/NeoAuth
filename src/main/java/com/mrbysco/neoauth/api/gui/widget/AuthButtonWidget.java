@@ -1,15 +1,14 @@
 package com.mrbysco.neoauth.api.gui.widget;
 
+import com.mrbysco.neoauth.NeoAuth;
 import com.mrbysco.neoauth.util.SessionUtils;
 import com.mrbysco.neoauth.util.SessionUtils.SessionStatus;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,15 +23,6 @@ public class AuthButtonWidget extends ImageButton {
 	private boolean didDrag = false;
 	// The last known status of the Minecraft session
 	private SessionStatus sessionStatus = SessionStatus.UNKNOWN;
-
-	// The authentication button textures
-	public static final WidgetSprites BUTTON_TEXTURES = new WidgetSprites(
-			ResourceLocation.parse("widget/locked_button"),
-			ResourceLocation.parse("widget/locked_button_disabled"),
-			ResourceLocation.parse("widget/locked_button_highlighted")
-	);
-	// The session status icon texture
-	public static final ResourceLocation SESSION_STATUS_TEXTURE = ResourceLocation.fromNamespaceAndPath("neo_auth", "textures/gui/session_status.png");
 
 	/**
 	 * Constructs a fixed (no drag) authentication button.
@@ -133,7 +123,7 @@ public class AuthButtonWidget extends ImageButton {
 			@Nullable Tooltip tooltip,
 			Component message
 	) {
-		super(x, y, 20, 20, BUTTON_TEXTURES, pressAction, message);
+		super(x, y, 20, 20, 0, 146, 20, Button.WIDGETS_LOCATION, 256, 256, pressAction, message);
 		this.screen = screen;
 		this.moveAction = moveAction;
 		this.setTooltip(tooltip);
@@ -226,9 +216,9 @@ public class AuthButtonWidget extends ImageButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		// Cascade the rendering
-		super.renderWidget(context, mouseX, mouseY, delta);
+		super.renderWidget(graphics, mouseX, mouseY, delta);
 
 		// Render the current session status
 		final int u;
@@ -237,7 +227,7 @@ public class AuthButtonWidget extends ImageButton {
 			case OFFLINE -> u = 8;
 			default -> u = 16;
 		}
-		context.blit(SESSION_STATUS_TEXTURE, getX() + width - 6, getY() - 1, u, 0, 8, 8, 24, 8);
+		graphics.blit(NeoAuth.WIDGETS_TEXTURE, getX() + width - 6, getY() - 1, u, 60, 8, 8, 128, 128);
 	}
 
 	/**

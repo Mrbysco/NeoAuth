@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -553,13 +552,6 @@ public class MicrosoftUtils {
 				return Optional.ofNullable(json.get("id"))
 						.map(JsonElement::getAsString)
 						.filter(uuid -> !uuid.isBlank())
-						// Parse the UUID (without hyphens)
-						.map(uuid -> UUID.fromString(
-								uuid.replaceFirst(
-										"([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)",
-										"$1-$2-$3-$4-$5"
-								)
-						))
 						// If present, log success, build a new session and return
 						.map(uuid -> {
 							NeoAuth.LOGGER.info("Fetched Minecraft profile! (name={}, uuid={})",

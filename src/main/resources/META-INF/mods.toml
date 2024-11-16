@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[4,)"
+loaderVersion="[47,)"
 issueTrackerURL="https://github.com/Mrbysco/NeoAuth/issues"
 license="MIT"
 
@@ -15,15 +15,13 @@ A Neoforge port of AuthMe
 '''
 [[dependencies.neo_auth]]
 modId="minecraft"
-type="required"
-versionRange="[1.21,1.22)"
+mandatory=true
+versionRange="[1.20.1,1.21)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.neo_auth]]
-modId="neoforge"
-type="required"
-versionRange="[21.1.1,)"
+modId="forge"
+mandatory=true
+versionRange="[47.1.0,)"
 ordering="NONE"
 side="BOTH"
-[[mixins]]
-config="neoauth.mixins.json"

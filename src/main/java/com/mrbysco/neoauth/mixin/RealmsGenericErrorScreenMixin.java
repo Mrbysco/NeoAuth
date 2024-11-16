@@ -47,7 +47,7 @@ public abstract class RealmsGenericErrorScreenMixin extends RealmsScreen {
 			assert minecraft != null;
 
 			// Create and add the button to the screen above the back button
-			final Button backButton = (Button) children().getFirst();
+			final Button backButton = (Button) children().get(0);
 			addRenderableWidget(
 					Button.builder(
 							Component.translatable("gui.neo_auth.button.relogin"),

@@ -5,7 +5,6 @@ import com.mrbysco.neoauth.impl.gui.AuthMethodScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.DisconnectedScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +27,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 
 	@Shadow
 	@Final
-	private DisconnectionDetails details;
+	private Component reason;
 
 	private DisconnectedScreenMixin(Component title) {
 		super(title);
@@ -42,7 +41,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 	@Inject(method = "init", at = @At("TAIL"))
 	private void init(CallbackInfo ci) {
 		// Determine if the disconnection reason is user or session related
-		if (isUserRelated(details.reason())) {
+		if (isUserRelated(reason)) {
 			NeoAuth.LOGGER.info("Adding auth button to the disconnected screen");
 			assert minecraft != null;
 

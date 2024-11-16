@@ -1,8 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8.5",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "package": "com.mrbysco.neoauth.mixin",
+  "refmap": "neoauth.refmap.json",
+  "target": "@env(DEFAULT)",
   "mixins": [],
   "server": [],
   "client": [
@@ -11,8 +13,9 @@
     "MinecraftClientAccessor",
     "MultiplayerScreenMixin",
     "RealmsGenericErrorScreenMixin",
-    "RealmsAvailabilityAccessor",
-    "SplashTextResourceSupplierAccessor"
+    "RealmsMainScreenAccessor",
+    "SplashTextResourceSupplierAccessor",
+    "YggdrasilAuthenticationServiceAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

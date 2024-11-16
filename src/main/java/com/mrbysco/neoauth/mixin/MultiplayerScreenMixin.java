@@ -2,8 +2,8 @@ package com.mrbysco.neoauth.mixin;
 
 import com.mrbysco.neoauth.NeoAuth;
 import com.mrbysco.neoauth.NeoAuthConfig;
-import com.mrbysco.neoauth.impl.gui.AuthMethodScreen;
 import com.mrbysco.neoauth.api.gui.widget.AuthButtonWidget;
+import com.mrbysco.neoauth.impl.gui.AuthMethodScreen;
 import com.mrbysco.neoauth.util.SessionUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
