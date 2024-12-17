@@ -1,1 +1,1 @@
-* Initial backport to 1.20.1
+* Fix refmap typo causing the mod to crash on start
