@@ -44,7 +44,7 @@ public abstract class RealmsGenericErrorScreenMixin extends RealmsScreen {
 		// Determine if the disconnection reason is user or session related
 		if (isUserRelated(lines.detail())) {
 			NeoAuth.LOGGER.info("Adding auth button to the Realms error screen");
-			assert minecraft != null;
+			if (minecraft == null) return;
 
 			// Create and add the button to the screen above the back button
 			final Button backButton = (Button) children().get(0);

@@ -43,7 +43,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 		// Determine if the disconnection reason is user or session related
 		if (isUserRelated(reason)) {
 			NeoAuth.LOGGER.info("Adding auth button to the disconnected screen");
-			assert minecraft != null;
+			if (minecraft == null) return;
 
 			// Create and add the button to the screen where the back button is
 			final Button backButton = (Button) children().get(2);

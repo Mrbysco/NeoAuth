@@ -32,7 +32,7 @@ public abstract class MultiplayerScreenMixin extends Screen {
 	@Inject(method = "init", at = @At("HEAD"))
 	private void init(CallbackInfo ci) {
 		NeoAuth.LOGGER.info("Adding auth button to the multiplayer screen");
-		assert minecraft != null;
+		if (minecraft == null) return;
 
 		// Create and add the button to the screen
 		addRenderableWidget(

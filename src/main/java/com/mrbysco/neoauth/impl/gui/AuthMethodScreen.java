@@ -35,7 +35,7 @@ public class AuthMethodScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		assert minecraft != null;
+		if (minecraft == null) return;
 
 		// Add a title
 		StringWidget titleWidget = new StringWidget(width, height, title, font);
@@ -117,7 +117,7 @@ public class AuthMethodScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-		assert minecraft != null;
+		if (minecraft == null) return;
 
 		// Render the background before any widgets
 		renderBackground(guiGraphics);

@@ -32,7 +32,7 @@ public abstract class AuthScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		assert minecraft != null;
+		if (minecraft == null) return;
 	}
 
 	@Override

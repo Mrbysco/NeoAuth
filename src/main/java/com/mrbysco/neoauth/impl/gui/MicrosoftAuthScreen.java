@@ -45,7 +45,7 @@ public class MicrosoftAuthScreen extends AuthScreen {
 	@Override
 	protected void init() {
 		super.init();
-		assert minecraft != null;
+		if (minecraft == null) return;
 
 		// Add a cancel button to abort the task
 		final Button cancelBtn;
@@ -135,7 +135,7 @@ public class MicrosoftAuthScreen extends AuthScreen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-		assert minecraft != null;
+		if (minecraft == null) return;
 
 		// Render the background before any widgets
 		renderBackground(graphics);
