@@ -3,7 +3,7 @@
   "minVersion": "0.8.5",
   "compatibilityLevel": "JAVA_17",
   "package": "com.mrbysco.neoauth.mixin",
-  "refmap": "neoauth.refmap.json",
+  "refmap": "neo_auth.refmap.json",
   "target": "@env(DEFAULT)",
   "mixins": [],
   "server": [],
