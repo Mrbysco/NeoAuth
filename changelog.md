@@ -1,1 +1,1 @@
-* Fix refmap typo causing the mod to crash on start
+* Fix issue where game crashes upon opening the multiplayer screen
