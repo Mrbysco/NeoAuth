@@ -1,1 +1,1 @@
-* Fix issue where game crashes upon opening the multiplayer screen
+* Fix another crash due to forgetting to reobfuscate the jar
