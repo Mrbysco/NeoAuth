@@ -27,11 +27,11 @@ import net.minecraft.network.chat.Component;
  */
 public class MicrosoftAuthScreen extends AuthScreen {
 
-    public static final WidgetSprites COPY_BUTTON_TEXTURES = new WidgetSprites(
-            ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/copy_button"),
-            ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/copy_button_disabled"),
-            ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/copy_button_focused")
-    );
+	public static final WidgetSprites COPY_BUTTON_TEXTURES = new WidgetSprites(
+			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/copy_button"),
+			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/copy_button_disabled"),
+			ResourceLocation.fromNamespaceAndPath("neo_auth", "widget/copy_button_focused")
+	);
 
 	// The executor to run the login task on
 	private ExecutorService executor = null;
@@ -39,8 +39,8 @@ public class MicrosoftAuthScreen extends AuthScreen {
 	private CompletableFuture<Void> task = null;
 	// The current progress/status of the login task
 	private StringWidget statusWidget = null;
-    // The uri used for authentication
-    private URI authUri = null;
+	// The uri used for authentication
+	private URI authUri = null;
 	// True if Microsoft should prompt to select an account
 	private final boolean selectAccount;
 
@@ -69,27 +69,27 @@ public class MicrosoftAuthScreen extends AuthScreen {
 		addRenderableWidget(titleWidget);
 
 		// Add a status message
-        var previousMessage = statusWidget != null ? statusWidget.getMessage() : Component.empty();
+		var previousMessage = statusWidget != null ? statusWidget.getMessage() : Component.empty();
 		statusWidget = new StringWidget(width, height, title, font);
 		statusWidget.setColor(0xdddddd);
 		statusWidget.setPosition(width / 2 - statusWidget.getWidth() / 2, height / 2 - statusWidget.getHeight() / 2 - 1);
-        statusWidget.setMessage(previousMessage);
+		statusWidget.setMessage(previousMessage);
 		addRenderableWidget(statusWidget);
 
 		// Add a cancel button to abort the task
 		final Button cancelBtn;
 		addRenderableWidget(cancelBtn = Button.builder(Component.translatable("gui.cancel"), button -> onClose()).bounds(width / 2 - 50, height / 2 + 22, 75, 20).build());
 
-        final Button copyLinkBtn;
+		final Button copyLinkBtn;
 		addRenderableWidget(copyLinkBtn = new ImageButton(width / 2 + 30, height / 2 + 22, 20, 20, COPY_BUTTON_TEXTURES, button -> copyLinkToClipboard(), Component.translatable("chat.copy")));
-        copyLinkBtn.setTooltip(Tooltip.create(
-                Component.translatable("gui.neo_auth.microsoft.button.copyLink")
-                        .append("\n")
-                        .append(
-                                Component.translatable("gui.neo_auth.microsoft.button.copyLink.tooltip").withStyle(ChatFormatting.GRAY)
-                        )
-        ));
-        copyLinkBtn.active = authUri != null;
+		copyLinkBtn.setTooltip(Tooltip.create(
+				Component.translatable("gui.neo_auth.microsoft.button.copyLink")
+						.append("\n")
+						.append(
+								Component.translatable("gui.neo_auth.microsoft.button.copyLink.tooltip").withStyle(ChatFormatting.GRAY)
+						)
+		));
+		copyLinkBtn.active = authUri != null;
 
 
 		// Prevent the task from starting several times
@@ -105,15 +105,15 @@ public class MicrosoftAuthScreen extends AuthScreen {
 		task = MicrosoftUtils
 				// Acquire a Microsoft auth code
 				.acquireMSAuthCode(
-                        uri -> {
-                            authUri = uri;
-                            copyLinkBtn.active = true;
-                            Util.getPlatform().openUri(uri);
-                        },
-                        success -> Component.translatable("gui.neo_auth.microsoft.browser").getString(),
-                        executor,
-                        selectAccount ? MicrosoftUtils.MicrosoftPrompt.SELECT_ACCOUNT : null
-                )
+						uri -> {
+							authUri = uri;
+							copyLinkBtn.active = true;
+							Util.getPlatform().openUri(uri);
+						},
+						success -> Component.translatable("gui.neo_auth.microsoft.browser").getString(),
+						executor,
+						selectAccount ? MicrosoftUtils.MicrosoftPrompt.SELECT_ACCOUNT : null
+				)
 
 				// Exchange the Microsoft auth code for an access token
 				.thenComposeAsync(msAuthCode -> {
@@ -172,14 +172,14 @@ public class MicrosoftAuthScreen extends AuthScreen {
 				});
 	}
 
-    public void copyLinkToClipboard() {
-        if (authUri != null && minecraft != null) {
-            minecraft.keyboardHandler.setClipboard(authUri.toString());
-            if (statusWidget != null) {
-                statusWidget.setMessage(Component.translatable("gui.neo_auth.microsoft.status.linkCopied"));
-            }
-        }
-    }
+	public void copyLinkToClipboard() {
+		if (authUri != null && minecraft != null) {
+			minecraft.keyboardHandler.setClipboard(authUri.toString());
+			if (statusWidget != null) {
+				statusWidget.setMessage(Component.translatable("gui.neo_auth.microsoft.status.linkCopied"));
+			}
+		}
+	}
 
 	@Override
 	public void onClose() {
