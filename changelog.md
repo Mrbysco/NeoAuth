@@ -1,1 +1,1 @@
-* Initial build
+* Add copy link to clipboard button (Thanks to [ThatGravyBoat](https://github.com/Mrbysco/NeoAuth/pull/6))
