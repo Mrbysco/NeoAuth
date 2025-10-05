@@ -20,6 +20,7 @@
   "gui.neo_auth.microsoft.title": "Login via Microsoft",
   "gui.neo_auth.microsoft.browser": "You may now close this window and return to Minecraft!",
   "gui.neo_auth.microsoft.status.checkBrowser": "Please check your browser...",
+  "gui.neo_auth.microsoft.status.linkCopied": "Link copied to clipboard! Please open it in your browser.",
   "gui.neo_auth.microsoft.status.msAccessToken": "Acquiring Microsoft access token...",
   "gui.neo_auth.microsoft.status.xboxAccessToken": "Acquiring Xbox access token...",
   "gui.neo_auth.microsoft.status.xboxXstsToken": "Acquiring Xbox XSTS token...",
@@ -29,6 +30,8 @@
   "gui.neo_auth.microsoft.warning.body": "If you did not make this change, then this could leak your account token. Do you wish to continue anyway?",
   "gui.neo_auth.microsoft.warning.accept": "I know what I'm doing",
   "gui.neo_auth.microsoft.warning.cancel": "Back to safety",
+  "gui.neo_auth.microsoft.button.copyLink": "Copy the link to clipboard",
+  "gui.neo_auth.microsoft.button.copyLink.tooltip": "You can use this if the link does not open automatically.",
 
   "gui.neo_auth.mojang.title": "Login via Mojang (Legacy)",
 
